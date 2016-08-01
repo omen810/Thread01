@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case  0:
+                    mProgressBar.setProgress(0);
                     mProgressBar.setVisibility(View.VISIBLE);
                     break;
                 case 1:
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 2:
                     mImageView.setImageBitmap((Bitmap)msg.obj);
+                    mProgressBar.setVisibility(View.INVISIBLE);
                     break;
                 default:
                     break;
