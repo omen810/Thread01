@@ -1,5 +1,7 @@
 package com.omen.www.thread01;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 1:
                     mProgressBar.setProgress((int)msg.obj);
+                    break;
+                case 2:
+                    mImageView.setImageBitmap((Bitmap)msg.obj);
                     break;
                 default:
                     break;
@@ -64,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
                            msg2.obj=i;
                            mHandler.sendMessage(msg2);
                        }
+                       Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                       Message msg3=mHandler.obtainMessage();
+                       msg3.what=2;
+                       msg3.obj=bitmap;
+                       mHandler.sendMessage(msg3);
                    }
 
                    private void sleep() {
