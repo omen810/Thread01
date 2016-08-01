@@ -2,6 +2,7 @@ package com.omen.www.thread01;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,10 +19,20 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     public static final String TAG = "TTTTTTTTTT";
 
-    private Handler mHandler=new Handler(){
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
-            mProgressBar.setVisibility(View.VISIBLE);
+            switch (msg.what){
+                case  0:
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    mProgressBar.setProgress((int)msg.obj);
+                    break;
+                default:
+                    break;
+            }
+
         }
     };
 
@@ -43,7 +54,24 @@ public class MainActivity extends AppCompatActivity {
                    @Override
                    public void run() {
                        Message message=new Message();
+                       message.what = 0;//让ProgressBar显示出来
                        mHandler.sendMessage(message);
+
+                       for (int i = 0; i < 101; i++) {
+                           sleep();
+                           Message msg2 = new Message();
+                           msg2.what = 1;//让ProgressBar往前走
+                           msg2.obj=i;
+                           mHandler.sendMessage(msg2);
+                       }
+                   }
+
+                   private void sleep() {
+                       try {
+                           Thread.sleep(50);
+                       } catch (InterruptedException e) {
+                           e.printStackTrace();
+                       }
                    }
                }).start();
 
