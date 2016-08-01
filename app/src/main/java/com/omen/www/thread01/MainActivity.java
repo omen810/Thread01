@@ -1,11 +1,9 @@
 package com.omen.www.thread01;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,6 +17,13 @@ public class MainActivity extends AppCompatActivity {
     private Button mToastButton;
     private ProgressBar mProgressBar;
     public static final String TAG = "TTTTTTTTTT";
+
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,14 @@ public class MainActivity extends AppCompatActivity {
         mLoadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new LoadImageTask().execute();
+               new Thread(new Runnable() {
+                   @Override
+                   public void run() {
+                       Message message=new Message();
+                       mHandler.sendMessage(message);
+                   }
+               }).start();
+
             }
         });
 
@@ -46,43 +58,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    class LoadImageTask extends AsyncTask<Void, Integer, Bitmap> {
-
-        @Override
-        protected void onPreExecute() {
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            Log.d(TAG, "doInBackground: "+Thread.currentThread().getName());
-            for(int i=1;i<11;i++){
-                sleep();
-                publishProgress(i*10);
-            }
-
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(),
-                    R.mipmap.ic_launcher);
-            return bmp;
-        }
-
-        private void sleep() {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            mProgressBar.setProgress(values[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            Log.d(TAG, "onPostExecute: "+Thread.currentThread().getName());
-            mImageView.setImageBitmap(bitmap);
-        }
-    }
 }
